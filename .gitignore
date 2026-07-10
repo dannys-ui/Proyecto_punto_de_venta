@@ -1,0 +1,6 @@
+# Ignorar ejecutables de Windows y Linux
+*.exe
+programa
+
+# Ignorar archivos de datos locales
+*.dat
