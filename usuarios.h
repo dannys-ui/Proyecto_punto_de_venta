@@ -7,7 +7,7 @@ typedef enum { //se define un tipo de dato enumerado llamado Rol
     COMPRADOR, // 4
 } Rol; //se llama rol a estos datos y se lo debe llamar con ese nombre mas adelante
 typedef struct { //se define un tipo de dato estructurado llamado Usuario
-    char uid_nfc[20]; //arreglo de tamaño 20 para guardar la clave de las tarjetas nfc
+    char uid_nfc[24]; //arreglo de tamaño 20 para guardar la clave de las tarjetas nfc
     char clave_teclado[20]; //arreglo auxiliar para ingresar la clave del usuario por teclado
     char nombre_usuario[50]; //arreglo para el nombre del usuario
     Rol rol; //cada usuario tendra un campo llamado rol y ese campo solo puede tomar un valor de rol.
@@ -17,3 +17,4 @@ typedef struct { //se define un tipo de dato estructurado llamado Usuario
 void crearArchivoSemilla(); //archivo "seed" o semilla que se genera por primera con datos de prueba.
 void leerUsuariosRegistrados(); //funcion que lee los usuarios registrados en el archivo de usuarios
 #endif // USUARIOS_H
+//!De momento funciona, no tocar :3
