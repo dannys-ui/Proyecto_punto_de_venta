@@ -1,21 +1,40 @@
 //!archivo para pruebas, todo se ira al main despues
 #include <stdio.h>
-#include <string.h>
-#include "usuarios.h"
-#include "clientes.h"
-
-int main() {
-    registrarCliente(); // Llamada a la función para registrar un cliente
-    mostrarClientes(); // Llamada a la función para mostrar los clientes registrados
-    printf("\nPrueba de clientes\n");
-    char id_para_venta[15];
-    printf("Ingrese la cedula del cliente para la venta: ");
-    scanf("%s", id_para_venta);
-    Cliente cliente_actual = buscarClientePorCedula(id_para_venta);
-    if (strcmp(cliente_actual.cedula, "") !=0) {
-        printf("Venta vinculada al cliente: %s, Tiene %d puntos.\n", cliente_actual.nombre_cliente, cliente_actual.puntos_acumulados);
-    } else {
-        printf("El cliente con cedula %s no existe. Se procedera como Consumidor Final.\n", id_para_venta);
-    }
+#include "productos.h"
+int main(){ 
+    int opcion;
+    do {
+        printf("Prueba de modulo de productos.\n");
+        printf("1. Crear inventario semilla\n");
+        printf("2. Mostrar productos\n");
+        printf("3. Registrar producto\n");
+        printf("4. Actualizar producto\n");
+        printf("5. Eliminar producto\n");
+        printf("6. Salir\n");
+        printf("Seleccione una opción: ");
+        scanf("%d", &opcion);
+        switch (opcion) {
+            case 1:
+                crearInventarioSemilla();
+                break;
+            case 2:
+                mostrarProductos();
+                break;
+            case 3:
+                registrarProducto();
+                break;
+            case 4:
+                actualizaProducto();
+                break;
+            case 5:
+                eliminarProducto();
+                break;
+            case 6:
+                printf("Saliendo del programa.\n");
+                break;
+            default:
+                printf("Opción no válida. Intente de nuevo.\n");
+        }
+    } while (opcion != 6);
     return 0;
 }
