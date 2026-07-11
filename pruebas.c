@@ -8,7 +8,9 @@ int main() {
     registrarCliente(); // Llamada a la función para registrar un cliente
     mostrarClientes(); // Llamada a la función para mostrar los clientes registrados
     printf("\nPrueba de clientes\n");
-    char id_para_venta[11]="1750725531";
+    char id_para_venta[15];
+    printf("Ingrese la cedula del cliente para la venta: ");
+    scanf("%s", id_para_venta);
     Cliente cliente_actual = buscarClientePorCedula(id_para_venta);
     if (strcmp(cliente_actual.cedula, "") !=0) {
         printf("Venta vinculada al cliente: %s, Tiene %d puntos.\n", cliente_actual.nombre_cliente, cliente_actual.puntos_acumulados);
