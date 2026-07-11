@@ -16,3 +16,7 @@ void crearArchivoSemilla() {
 
     fwrite(lista_semilla, sizeof(Usuario), 4, archivo); //se escribe la lista de usuarios en el archivo
     }
+    //odio visual studio code con mi vida
+    fclose(archivo);
+        printf("Archivo semilla 'usuarios.dat' creado con exito.\n");
+}
