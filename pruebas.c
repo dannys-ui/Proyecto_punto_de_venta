@@ -1,6 +1,7 @@
 //!archivo para pruebas, todo se ira al main despues
 #include <stdio.h>
 #include "productos.h"
+#include "clientes.h"
 int main(){ 
     int opcion;
     do {

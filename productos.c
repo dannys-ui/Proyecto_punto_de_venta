@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include "clientes.h"
 #include "productos.h"
 
 void crearInventarioSemilla() {
@@ -163,54 +164,78 @@ void eliminarProducto() {
     }
 }
 void realizarVenta() {
-    FILE* archivoProds = fopen("productos.dat", "rb+");
+    FILE *archivoProds = fopen("productos.dat", "rb+");
     FILE *archivoVentas = fopen("ventas.dat", "ab");
     if (archivoProds == NULL || archivoVentas == NULL) {
-        printf("Error al abrir las bases de datos para la venta. \n");
+        printf("Error al abrir las bases de datos de venta.\n");
         if(archivoProds) fclose(archivoProds);
         if(archivoVentas) fclose(archivoVentas);
         return;
     }
+    char cedula_buscar[15];
     int id_buscar, cantidad_vender;
     int encontrado = 0;
     Producto p;
     printf("\n--- NUEVA VENTA (CAJA) ---\n");
+    printf("Ingrese la cedula del cliente, o escriba '9999999999' para Consumidor final: \n");
+    scanf("%s", cedula_buscar);
+    Cliente c;
+    if (strcmp(cedula_buscar, "9999999999") == 0) {
+        strcpy(c.nombre_cliente, "Consumidor Final");
+        strcpy(c.cedula, "9999999999");
+    } else {
+        c = buscarClientePorCedula(cedula_buscar);
+        if (strcmp(c.nombre_cliente, "No Registrado") == 0) {
+        printf("El cliente no existe. Registrelo o use Consumidor Final.\n");
+        fclose(archivoProds);
+        fclose(archivoVentas);
+        return;
+        }
+    }
+    printf("Cliente asociado: %s\n", c.nombre_cliente);
+    printf("----------------------------\n");
     printf("Ingrese el ID del producto a vender: ");
     scanf("%d", &id_buscar);
     while (fread(&p, sizeof(Producto), 1, archivoProds) == 1) {
         if (p.id_producto == id_buscar) {
             encontrado = 1;
-            printf("Producto: %s | Precio: %.2f | Stock disponible: %d\n", p.nombre_producto, p.precio, p.stock);
+            printf("Producto: %s | Precio Unitario: $%.2f | Stock: %d\n", p.nombre_producto, p.precio, p.stock);
             if (p.stock == 0) {
                 printf("Error: Producto agotado.\n");
                 break;
             }
             printf("Ingrese la cantidad a vender: ");
             scanf("%d", &cantidad_vender);
-        if (cantidad_vender > p.stock) {
-            printf("Error: No hay suficiente stock. Quedan %d unidades.\n", p.stock);
-            break;
+            if(cantidad_vender > p.stock) {
+                printf("Error: No hay suficiente stock. Quedan %d unidades.\n", p.stock);
+                break;
+            }
+            float subtotal = p.precio * cantidad_vender;
+            float iva = subtotal * 0.15; //! IVA 15%
+            float total = subtotal + iva;
+            printf("\n---- TICKET DE VENTA ----\n");
+            printf("Cliente: %s\n", c.nombre_cliente);
+            printf("Cedula: %s\n", c.cedula);
+            printf("Articulo: %s x %d\n", p.nombre_producto, cantidad_vender);
+            printf("\n-----------------------\n");
+            printf("Subtotal: %.2f\n", subtotal);
+            printf("IVA (15%%): $%.2f\n", iva);
+            printf("Total a pagar: $%.2f\n", total);
+            p.stock -= cantidad_vender;
+            fseek(archivoProds, -sizeof(Producto), SEEK_CUR);
+            fwrite(&p, sizeof(Producto), 1, archivoProds);
+            fseek(archivoVentas, 0, SEEK_END);
+            int num_ventas = ftell(archivoVentas) / sizeof(Factura);
+            Factura nuevaVenta;
+            nuevaVenta.id_venta = num_ventas + 1;
+            nuevaVenta.total_pagado = total;
+            fwrite(&nuevaVenta, sizeof(Factura), 1, archivoVentas);
+            printf("Venta procesada con exito.\n");
+            break; 
         }
-        float total = p.precio * cantidad_vender;
-        printf("\n--- TICKET DE VENTA ---\n");
-        printf("Articulo: %s x %d\n", p.nombre_producto, cantidad_vender);
-        printf("Total a pagar: $%.2f\n", total);
-        printf("--------------------------\n");
-        p.stock -= cantidad_vender;
-        fseek(archivoProds, -sizeof(Producto), SEEK_CUR);
-        fwrite(&p, sizeof(Producto), 1, archivoProds);
-        fseek(archivoVentas, 0, SEEK_END);
-        int num_ventas = ftell(archivoVentas) / sizeof(Factura);
-        Factura nuevaVenta;
-        nuevaVenta.id_venta = num_ventas + 1;
-        nuevaVenta.total_pagado = total;
-        fwrite(&nuevaVenta, sizeof(Factura), 1, archivoVentas);
-        printf("Venta procesada e inventario actualizado.\n");
-        break;
-        }  
     }
     if (!encontrado) {
-        printf("Error: El producto con ID %d no existe.\n", id_buscar);
+        printf("Error: El ID ingresado no existe.\n");
     }
     fclose(archivoProds);
     fclose(archivoVentas);
