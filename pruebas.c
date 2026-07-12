@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "productos.h"
 #include "clientes.h"
+#include "caja.h"
 int main(){ 
     int opcion;
     do {

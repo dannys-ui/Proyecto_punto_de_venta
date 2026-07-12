@@ -2,6 +2,7 @@
 #include <string.h>
 #include "clientes.h"
 #include "productos.h"
+#include "caja.h"
 
 void crearInventarioSemilla() {
     FILE *archivo = fopen("productos.dat", "wb");
@@ -164,6 +165,10 @@ void eliminarProducto() {
     }
 }
 void realizarVenta() {
+    if(esCajaAbierta() == 0) {
+        printf("Error: La caja aun no ha sido abierta.\n");
+        return;
+    }
     FILE *archivoProds = fopen("productos.dat", "rb+");
     FILE *archivoVentas = fopen("ventas.dat", "ab");
     if (archivoProds == NULL || archivoVentas == NULL) {
