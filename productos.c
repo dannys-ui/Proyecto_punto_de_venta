@@ -162,3 +162,75 @@ void eliminarProducto() {
         printf("Producto con ID %d no encontrado.\n", id_eliminar);
     }
 }
+void realizarVenta() {
+    FILE* archivoProds = fopen("productos.dat", "rb+");
+    FILE *archivoVentas = fopen("ventas.dat", "ab");
+    if (archivoProds == NULL || archivoVentas == NULL) {
+        printf("Error al abrir las bases de datos para la venta. \n");
+        if(archivoProds) fclose(archivoProds);
+        if(archivoVentas) fclose(archivoVentas);
+        return;
+    }
+    int id_buscar, cantidad_vender;
+    int encontrado = 0;
+    Producto p;
+    printf("\n--- NUEVA VENTA (CAJA) ---\n");
+    printf("Ingrese el ID del producto a vender: ");
+    scanf("%d", &id_buscar);
+    while (fread(&p, sizeof(Producto), 1, archivoProds) == 1) {
+        if (p.id_producto == id_buscar) {
+            encontrado = 1;
+            printf("Producto: %s | Precio: %.2f | Stock disponible: %d\n", p.nombre_producto, p.precio, p.stock);
+            if (p.stock == 0) {
+                printf("Error: Producto agotado.\n");
+                break;
+            }
+            printf("Ingrese la cantidad a vender: ");
+            scanf("%d", &cantidad_vender);
+        if (cantidad_vender > p.stock) {
+            printf("Error: No hay suficiente stock. Quedan %d unidades.\n", p.stock);
+            break;
+        }
+        float total = p.precio * cantidad_vender;
+        printf("\n--- TICKET DE VENTA ---\n");
+        printf("Articulo: %s x %d\n", p.nombre_producto, cantidad_vender);
+        printf("Total a pagar: $%.2f\n", total);
+        printf("--------------------------\n");
+        p.stock -= cantidad_vender;
+        fseek(archivoProds, -sizeof(Producto), SEEK_CUR);
+        fwrite(&p, sizeof(Producto), 1, archivoProds);
+        fseek(archivoVentas, 0, SEEK_END);
+        int num_ventas = ftell(archivoVentas) / sizeof(Factura);
+        Factura nuevaVenta;
+        nuevaVenta.id_venta = num_ventas + 1;
+        nuevaVenta.total_pagado = total;
+        fwrite(&nuevaVenta, sizeof(Factura), 1, archivoVentas);
+        printf("Venta procesada e inventario actualizado.\n");
+        break;
+        }  
+    }
+    if (!encontrado) {
+        printf("Error: El producto con ID %d no existe.\n", id_buscar);
+    }
+    fclose(archivoProds);
+    fclose(archivoVentas);
+}
+void mostrarVentasRealizadas() {
+    FILE *archivo = fopen("ventas.dat", "rb");
+    if (archivo == NULL) {
+        printf("\nNo se han realizado ventas todavia hoy.\n");
+        return;
+    }
+    Factura f;
+    float gran_total = 0;
+    printf("\n---- HISTORIAL DE VENTAS ----\n");
+    printf("%-10s | %-12s\n", "Num Ticket", "Total Pagado");
+    printf("--------------------------------\n");
+    while (fread(&f, sizeof(Factura), 1, archivo) == 1) {
+        printf("Ticket #%-4d | $%-11.2f\n", f.id_venta, f.total_pagado);
+        gran_total += f.total_pagado;
+    }
+    printf("---------------------------\n");
+    printf("GANANCIAS TOTALES DEL DIA: $%.2f\n", gran_total);
+    fclose(archivo);
+}

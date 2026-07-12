@@ -10,7 +10,9 @@ int main(){
         printf("3. Registrar producto\n");
         printf("4. Actualizar producto\n");
         printf("5. Eliminar producto\n");
-        printf("6. Salir\n");
+        printf("6. Realizar Venta\n");
+        printf("7. Historial de ventas\n");
+        printf("8. Salir\n");
         printf("Seleccione una opción: ");
         scanf("%d", &opcion);
         switch (opcion) {
@@ -30,11 +32,16 @@ int main(){
                 eliminarProducto();
                 break;
             case 6:
-                printf("Saliendo del programa.\n");
+                realizarVenta();
                 break;
+            case 7:
+                mostrarVentasRealizadas();
+                break;
+            case 8:
+                printf("Saliendo.\n");
             default:
                 printf("Opción no válida. Intente de nuevo.\n");
         }
-    } while (opcion != 6);
+    } while (opcion != 8);
     return 0;
 }
