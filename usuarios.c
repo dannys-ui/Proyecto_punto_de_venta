@@ -9,9 +9,9 @@ void crearArchivoSemilla() {
         return;
     }
     Usuario lista_semilla[4] = {
-        {"04:9D:24:25:CA:2A:81", "admin123", "Administrador", ADMINISTRADOR, 0}, //tarjeta 1
-        {"04:D2:E3:24:CA:2A:81", "cajero123", "Cajero", CAJERO, 0}, //tarjeta 2
-        {"04:D3:22:24:CA:2A:81", "bodeguero123", "Bodeguero", BODEGUERO, 0}, //tarjeta 3
+        {"04:9D:24:25:CA:2A:81", "Jorgue", "Administrador", ADMINISTRADOR, 0}, //tarjeta 1
+        {"04:D2:E3:24:CA:2A:81", "Daniel", "Cajero", CAJERO, 0}, //tarjeta 2
+        {"04:D3:22:24:CA:2A:81", "Oscar", "Bodeguero", BODEGUERO, 0}, //tarjeta 3
         {"04:CA:E4:24:CA:2A:81", "0000", "Comprador", COMPRADOR, 10} //tarjeta 4
     };
     fwrite(lista_semilla, sizeof(Usuario), 4, archivo); //se escribe la lista de usuarios en el archivo

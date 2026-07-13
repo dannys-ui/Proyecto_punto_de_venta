@@ -1,0 +1,146 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "usuarios.h"
+#include "productos.h"
+#include "clientes.h"
+#include "caja.h"
+#include "reportes.h"
+void menuAdministrador();
+void menuCajero();
+void menuBodeguero();
+int main() {
+    FILE *comprobarInventario = fopen("productos.dat", "rb");
+    if(comprobarInventario == NULL) {
+        printf("[SISTEMA] Creanfo bases de datos iniciales.\n");
+        crearArchivoSemilla();
+        crearInventarioSemilla();
+    } else {
+        fclose(comprobarInventario);
+        printf("[SISTEMA] Cargando inventario y usuarios registrados.\n");
+    }
+    char uid_ingresado[24];
+    int autenticado = 0;
+    Rol rolUsuario;
+    printf("\n    BIENVENIDO AL SISTEMA DE VENTAS    \n");
+    //! De momento se ingresa a mano hasta recibir el modulo de tarjetas NFC
+    //Administrador = 04:9D:24:25:CA:2A:81
+    //Cajero = 04:D2:E3:24:CA:2A:81
+    //Bodeguero = 04:D3:22:24:CA:2A:81
+    printf("Ingrese el UID NFC de su tarjeta para ingresar: ");
+    scanf("%23s", uid_ingresado);
+    FILE *archivo = fopen("usuarios.dat", "rb");
+    if(archivo == NULL) {
+        printf("Error: No se pudo abrir la base de datos de usuarios.\n");
+        return 1;
+    }
+    Usuario u;
+    while(fread(&u, sizeof(Usuario), 1, archivo) == 1) {
+        if(strcmp(u.uid_nfc, uid_ingresado) == 0) {
+            autenticado = 1;
+            rolUsuario = u.rol;
+            printf("\nAcceso concedido. Bienvenido: %s [%s]\n", u.nombre_usuario, u.clave_teclado);
+            break;
+        }
+    }
+    fclose(archivo);
+    if(!autenticado) {
+        printf("Error: Tarjeta NFC no registrada en el sistema.\n");
+        return 0;
+    }
+    switch (rolUsuario) {
+    case ADMINISTRADOR:
+        menuAdministrador();
+        break;
+    case CAJERO:
+        menuCajero();
+        break;
+    case BODEGUERO:
+        menuBodeguero();
+        break;
+    default:
+        printf("Los roles desconocidos no tienen acceso al sistema de gestion.\n");
+        break;
+    }
+    printf("\nSistema cerrado correctamente\n");
+    return 0;
+}
+void menuAdministrador() {
+    int opcion;
+    do {
+        printf("\n    MENU ADMINISTRADOR    \n");
+        printf("1. Ver inventario completo.\n");
+        printf("2. Registrar nuevo producto.\n");
+        printf("3. Actualizar producto.\n");
+        printf("4. Eliminar producto.\n");
+        printf("5. Ver lista de clientes.\n");
+        printf("6. Registrar nuevo cliente,\n");
+        printf("7. Abrir caja.\n");
+        printf("8. Realizar venta.\n");
+        printf("9. Historial de ventas del dia.\n");
+        printf("10. Cerrar caja.\n");
+        printf("11. Reportes.\n");
+        printf("12. Salir del sistema.\n");
+        printf("Seleccione una opcion: ");
+        scanf("%d", &opcion);
+        switch (opcion) {
+            case 1: mostrarProductos(); break;
+            case 2: registrarProducto(); break;
+            case 3: actualizaProducto(); break;
+            case 4: eliminarProducto(); break;
+            case 5: mostrarClientes(); break;
+            case 6: registrarCliente(); break;
+            case 7: abrirCaja(); break;
+            case 8: realizarVenta(); break;
+            case 9: mostrarVentasRealizadas(); break;
+            case 10: cerrarCaja(); break;
+            case 11: menuReportes(); break;
+            case 12: printf("Cerrando sesion de ADMINISTRADOR.\n"); break;
+            default: printf("Opcion no valida.\n");
+        }
+    } while (opcion != 12);
+}
+void menuCajero() {
+    int opcion;
+    do {
+        printf("\n      MENU CAJERO     \n");
+        printf("1. Abrir caja.\n");
+        printf("2. Realizar facturacion.\n");
+        printf("3. Consultar clientes.\n");
+        printf("4. Registrar nuevo cliente.\n");
+        printf("5. Historial de ventas.\n");
+        printf("6. Cerrar caja.\n");
+        printf("7. Salir del sistema.\n");
+        printf("Seleccione una opcion: ");
+        scanf("%d", &opcion);
+        switch (opcion) {
+        case 1: abrirCaja(); break;
+        case 2: realizarVenta(); break;
+        case 3: mostrarClientes(); break;
+        case 4: registrarCliente(); break;
+        case 5: mostrarVentasRealizadas(); break;
+        case 6: cerrarCaja(); break;
+        case 7: printf("Cerrando sesion de CAJERO.\n"); break;
+        default: printf("Opcion no valida.\n");
+        }
+    } while (opcion != 7);
+}
+void menuBodeguero() {
+    int opcion;
+    do {
+        printf("\n      MENU BODEGUERO      \n");
+        printf("1. Ver stock actual de producto.\n");
+        printf("2. Registrar ingreso de nuevo producto.\n");
+        printf("3. Actualizar producto.\n");
+        printf("4. Salir del sistema.\n");
+        printf("Seleccione una opcion: ");
+        scanf("%d", &opcion);
+        switch (opcion) {
+        case 1: mostrarProductos(); break;
+        case 2: registrarProducto(); break;
+        case 3: actualizaProducto(); break;
+        case 4: printf("Cerrando sesion de BODEGUERO.\n"); break;
+        default: printf("Opcion no valida.\n");
+        }
+    } while (opcion != 4);
+}

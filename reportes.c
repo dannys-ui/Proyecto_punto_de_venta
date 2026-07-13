@@ -23,6 +23,38 @@ void reporteStockBajo() {
     printf("Total de productos fisicos en la tienda: %d unidades.\n", gran_total);
     printf("==============================\n");
 }
+void reporteProductosPorPrecio() {
+    FILE *archivo = fopen("productos.dat", "rb");
+    if (archivo == NULL) {
+        printf("Error al abrir el inventario.\n");
+        return;
+    }
+    Producto lista[500];
+    int total_productos = 0;
+    while (fread(&lista[total_productos], sizeof(Producto), 1, archivo) == 1) {
+        total_productos++;
+        if(total_productos >= 500) break;
+    }
+    fclose(archivo);
+    if(total_productos == 0) {
+        printf("\nNo hay productos registrados para ordenar.\n");
+        return;
+    }
+    for(int i = 0; i < total_productos - 1; i++) {
+        for(int j = 0; j < total_productos - i - 1; j++) {
+            if(lista[j].precio < lista[j + 1].precio) {
+                Producto temp = lista[j];
+                lista[j] = lista[j + 1];
+                lista[j + 1] = temp;
+            }
+        }
+    }
+    printf("\n        REPORTE PRODUCTOS POR PRECIO            \n");
+    printf("%-5s | %-20s | %-10s | %-6s\n", "ID", "Nombre", "Precio", "Stock");
+    for(int i = 0; i < total_productos; i++) {
+        printf("%-5d | %-20s | $%-9.2f | %-6d\n", lista[i].id_producto, lista[i].nombre_producto, lista[i].precio, lista[i].stock);
+    }
+}
 void menuReportes() {
     int opcion;
     printf("\n======================================\n");
@@ -34,7 +66,7 @@ void menuReportes() {
     printf("0. Volver al menu principal.\n");
     printf("========================================\n");
     printf("Seleccione una opcion: ");
-    scanf("%d", opcion);
+    scanf("%d", &opcion);
     char cedula[15];
     Cliente c;
     switch (opcion)
@@ -55,7 +87,7 @@ void menuReportes() {
             printf("%-10s | %-15s\n", "ID venta", "Total Pagado");
             printf("------------------------------------------\n");
             while (fread(&f, sizeof(Factura), 1, archivoVentas) == 1) {
-                printf("%-10s | $%-15.2f\n", f.id_venta, f.total_pagado);
+                printf("%-10d | $%-15.2f\n", f.id_venta, f.total_pagado);
             }
             fclose(archivoVentas);
         }

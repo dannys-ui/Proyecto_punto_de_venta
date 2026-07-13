@@ -245,6 +245,23 @@ void realizarVenta() {
             printf("IVA (15%%): $%.2f\n", iva);
             printf("Total a pagar: $%.2f\n", total);
             printf("------------------------------\n");
+            if(strcmp(c.cedula, "9999999999") != 0) {
+                int puntos_ganados = (int)(total / 10.0);
+                if(puntos_ganados > 0) {
+                    FILE * archivoClientes = fopen("clientes.dat", "rb+");
+                    if(archivoClientes != NULL) {
+                        Cliente cl_temp;
+                        while(fread(&cl_temp, sizeof(Cliente), 1, archivoClientes) == 1) {
+                            cl_temp.puntos_acumulados += puntos_ganados;
+                            fseek(archivoClientes, -sizeof(Cliente), SEEK_CUR);
+                            fwrite(&cl_temp, sizeof(Cliente), 1, archivoClientes);
+                            printf("Ha acumulado %d puntos. Total actual: %d\n", puntos_ganados, cl_temp.puntos_acumulados);
+                            break;
+                        }
+                    }
+                    fclose(archivoClientes);
+                }
+            }
             fseek(archivoVentas, 0, SEEK_END); 
             int num_ventas = ftell(archivoVentas) / sizeof(Factura);
             Factura nuevaVenta;
