@@ -39,7 +39,7 @@ int main() {
         if(strcmp(u.uid_nfc, uid_ingresado) == 0) {
             autenticado = 1;
             rolUsuario = u.rol;
-            printf("\nAcceso concedido. Bienvenido: %s [%s]\n", u.nombre_usuario, u.clave_teclado);
+            printf("\nAcceso concedido. Bienvenido: %s [%s]\n", u.rol_usuario, u.nombre);
             break;
         }
     }
@@ -80,7 +80,9 @@ void menuAdministrador() {
         printf("9. Historial de ventas del dia.\n");
         printf("10. Cerrar caja.\n");
         printf("11. Reportes.\n");
-        printf("12. Salir del sistema.\n");
+        printf("12. Ver ususarios del sistema.\n");
+        printf("13. Ver historail de ventas.\n");
+        printf("14. Salir del sistema.\n");
         printf("Seleccione una opcion: ");
         scanf("%d", &opcion);
         switch (opcion) {
@@ -95,10 +97,12 @@ void menuAdministrador() {
             case 9: mostrarVentasRealizadas(); break;
             case 10: cerrarCaja(); break;
             case 11: menuReportes(); break;
-            case 12: printf("Cerrando sesion de ADMINISTRADOR.\n"); break;
+            case 12: leerUsuariosRegistrados(); break;
+            case 13: mostrarHistorialVentas(); break;
+            case 14: printf("Cerrando sesion de ADMINISTRADOR.\n"); break;
             default: printf("Opcion no valida.\n");
         }
-    } while (opcion != 12);
+    } while (opcion != 14);
 }
 void menuCajero() {
     int opcion;

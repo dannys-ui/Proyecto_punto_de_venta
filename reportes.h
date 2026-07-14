@@ -6,4 +6,5 @@ void menuReportes();
 void reporteStockBajo();
 int calcularTotalUnidades(FILE *archivo); //* funcion recursiva
 void reporteProductosPorPrecio();
+void mostrarHistorialVentas();
 #endif

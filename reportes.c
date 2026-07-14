@@ -110,3 +110,26 @@ void menuReportes() {
         break;
     }
 }
+void mostrarHistorialVentas() {
+    FILE *archivo = fopen("historial_ventas.dat", "rb");
+    if (archivo == NULL) {
+        printf("\n[Historial] No hay ventas registradas en el historial aun.\n");
+        return;
+    }
+    Factura f;
+    float totalHistorico = 0.0;
+    int contador = 1;
+    printf("\n=========================================\n");
+    printf("\n     HISTORIAL ACUMULADO DE VENTAS    ");
+    while (fread(&f, sizeof(Factura), 1, archivo) == 1) {
+        printf("Venta #%d\n", contador++);
+        printf("  ID Venta: %d\n", f.id_venta);
+        printf("  Total Pagado: $%.2f\n", f.total_pagado);
+        printf("-----------------------------------------\n");
+        totalHistorico += f.total_pagado; 
+    }
+    fclose(archivo);
+
+    printf("Total Recaudado: $%.2f\n", totalHistorico);
+    printf("=============================================\n");
+}
