@@ -64,10 +64,11 @@ void cerrarCaja() {
     printf("Ingrese el monto fisico real en efectivo: $");
     scanf("%f", &miCaja.monto_cierre_fisico);
     printf("===============================\n");
+    float tolerancia = 0.009f;
     float diferencia = miCaja.monto_cierre_fisico - miCaja.monto_cierre_calculado;
-    if (diferencia >= -0.005 && diferencia <= 0.005) {
+    if (diferencia >= -tolerancia && diferencia <= tolerancia) {
         printf("Caja cuadrada\n");
-    } else if (diferencia > 0.005) {
+    } else if (diferencia > tolerancia) {
         printf("La caja no esta cuadrada. Sobran: $%.2f\n", diferencia);
     } else {
         printf("La caja no esta cuadrada. Faltan: $%.2f\n", diferencia * -1);
