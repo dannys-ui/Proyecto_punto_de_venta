@@ -17,7 +17,7 @@ Un sistema modular de gestión de ventas, facturación, control de inventarios y
 
 ---
 
-## 🛠️ Estructura del Proyecto
+## Estructura del Proyecto
 
 El proyecto está diseñado de forma modular para un mantenimiento limpio:
 
@@ -31,7 +31,7 @@ El proyecto está diseñado de forma modular para un mantenimiento limpio:
 
 ---
 
-## 📊 Arquitectura de Datos (`Structs` Utilizados)
+## Arquitectura de Datos (`Structs` Utilizados)
 
 El software persiste los datos mediante flujos de bytes binarios. El diseño de las estructuras principales es el siguiente:
 
