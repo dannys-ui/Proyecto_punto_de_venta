@@ -6,6 +6,8 @@
 #include "clientes.h"
 #include "caja.h"
 #include "reportes.h"
+#include "ventas.h"
+
 void menuAdministrador();
 void menuCajero();
 void menuBodeguero();
@@ -74,15 +76,16 @@ void menuAdministrador() {
         printf("3. Actualizar producto.\n");
         printf("4. Eliminar producto.\n");
         printf("5. Ver lista de clientes.\n");
-        printf("6. Registrar nuevo cliente,\n");
+        printf("6. Registrar nuevo cliente.\n");
         printf("7. Abrir caja.\n");
         printf("8. Realizar venta.\n");
         printf("9. Historial de ventas del dia.\n");
         printf("10. Cerrar caja.\n");
-        printf("11. Reportes.\n");
-        printf("12. Ver ususarios del sistema.\n");
-        printf("13. Ver historail de ventas.\n");
-        printf("14. Salir del sistema.\n");
+        printf("11. Reportes avanzados.\n");
+        printf("12. Ver usuarios del sistema.\n");
+        printf("13. Eliminar usuarios del sistema.\n");
+        printf("14. Historial completo de ventas.\n");
+        printf("15. Salir del sistema.\n");
         printf("Seleccione una opcion: ");
         scanf("%d", &opcion);
         switch (opcion) {
@@ -94,15 +97,22 @@ void menuAdministrador() {
             case 6: registrarCliente(); break;
             case 7: abrirCaja(); break;
             case 8: realizarVenta(); break;
-            case 9: mostrarVentasRealizadas(); break;
+            case 9: mostrarVentas(); break;
             case 10: cerrarCaja(); break;
-            case 11: menuReportes(); break;
+            case 11: menuReportesAvanzado(); break;
             case 12: leerUsuariosRegistrados(); break;
-            case 13: mostrarHistorialVentas(); break;
-            case 14: printf("Cerrando sesion de ADMINISTRADOR.\n"); break;
+            case 13: {
+                char nombre[50];
+                printf("Ingrese el nombre del usuario a eliminar: ");
+                scanf("%49s", nombre);
+                eliminarUsuarioPorNombre(nombre);
+                break;
+            }
+            case 14: mostrarHistorialVentas(); break;
+            case 15: printf("Cerrando sesion de ADMINISTRADOR.\n"); break;
             default: printf("Opcion no valida.\n");
         }
-    } while (opcion != 14);
+    } while (opcion != 15);
 }
 void menuCajero() {
     int opcion;
@@ -112,20 +122,20 @@ void menuCajero() {
         printf("2. Realizar facturacion.\n");
         printf("3. Consultar clientes.\n");
         printf("4. Registrar nuevo cliente.\n");
-        printf("5. Historial de ventas.\n");
+        printf("5. Historial de ventas del dia.\n");
         printf("6. Cerrar caja.\n");
         printf("7. Salir del sistema.\n");
         printf("Seleccione una opcion: ");
         scanf("%d", &opcion);
         switch (opcion) {
-        case 1: abrirCaja(); break;
-        case 2: realizarVenta(); break;
-        case 3: mostrarClientes(); break;
-        case 4: registrarCliente(); break;
-        case 5: mostrarVentasRealizadas(); break;
-        case 6: cerrarCaja(); break;
-        case 7: printf("Cerrando sesion de CAJERO.\n"); break;
-        default: printf("Opcion no valida.\n");
+            case 1: abrirCaja(); break;
+            case 2: realizarVenta(); break;
+            case 3: mostrarClientes(); break;
+            case 4: registrarCliente(); break;
+            case 5: mostrarVentas(); break;
+            case 6: cerrarCaja(); break;
+            case 7: printf("Cerrando sesion de CAJERO.\n"); break;
+            default: printf("Opcion no valida.\n");
         }
     } while (opcion != 7);
 }
@@ -133,18 +143,26 @@ void menuBodeguero() {
     int opcion;
     do {
         printf("\n      MENU BODEGUERO      \n");
-        printf("1. Ver stock actual de producto.\n");
+        printf("1. Ver stock actual de productos.\n");
         printf("2. Registrar ingreso de nuevo producto.\n");
         printf("3. Actualizar producto.\n");
-        printf("4. Salir del sistema.\n");
+        printf("4. Reporte de stock bajo minimo.\n");
+        printf("5. Salir del sistema.\n");
         printf("Seleccione una opcion: ");
         scanf("%d", &opcion);
         switch (opcion) {
-        case 1: mostrarProductos(); break;
-        case 2: registrarProducto(); break;
-        case 3: actualizaProducto(); break;
-        case 4: printf("Cerrando sesion de BODEGUERO.\n"); break;
-        default: printf("Opcion no valida.\n");
+            case 1: mostrarProductos(); break;
+            case 2: registrarProducto(); break;
+            case 3: actualizaProducto(); break;
+            case 4: {
+                int minimo;
+                printf("Ingrese el stock minimo: ");
+                scanf("%d", &minimo);
+                mostrarStockBajoMinimo(minimo);
+                break;
+            }
+            case 5: printf("Cerrando sesion de BODEGUERO.\n"); break;
+            default: printf("Opcion no valida.\n");
         }
-    } while (opcion != 4);
+    } while (opcion != 5);
 }

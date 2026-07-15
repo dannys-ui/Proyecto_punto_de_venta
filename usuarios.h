@@ -1,17 +1,22 @@
-#ifndef USUARIOS_H //para evitar que se incluya varias veces el mismo archivo
-#define USUARIOS_H //si no existe entonces se define y la crea
-typedef enum { //se define un tipo de dato enumerado llamado Rol
-    ADMINISTRADOR = 1, //rol administrador = 1, los otros valores se asignan automáticamente a partir de 1
-    CAJERO, //rol cajero con el valor 2 automáticamente asignado
-    BODEGUERO, // igual que cajera se asigno automáticamente el valor 3
-} Rol; //se llama rol a estos datos y se lo debe llamar con ese nombre mas adelante
-typedef struct { //se define un tipo de dato estructurado llamado Usuario
-    char uid_nfc[24]; //arreglo de tamaño 24 para guardar la clave de las tarjetas nfc
+//                                                                                                                            //
+//          Declaracion modulo de usuarios del sistma          //
+#ifndef USUARIOS_H //si no esta definido procede a ejecutar lo que sigue
+#define USUARIOS_H //lo define y crea
+typedef enum { //estructura de datos
+    ADMINISTRADOR = 1, //rol administrador = 1
+    CAJERO, //valor 2 automáticamente asignado
+    BODEGUERO, // valor 3 automaticamente asignado
+} Rol; //nombre de la estrutura de datos
+typedef struct { 
+    char uid_nfc[24]; //arreglo para guardar la calva NFC
     char nombre[50]; //arreglo para el nombre 
     char rol_usuario[20]; //arreglo para el rol que ocupa
-    Rol rol; //cada usuario tendra un campo llamado rol y ese campo solo puede tomar un valor de rol.
-} Usuario; //se llama Usuario a estos datos y se lo debe llamar con ese nombre mas adelante
+    Rol rol; //se veulve a llamar al enum de arriba
+} Usuario; //nombre de la estructura de datos
 
-void crearArchivoSemilla(); //archivo "seed" o semilla que se genera por primera con datos de prueba.
-void leerUsuariosRegistrados(); //funcion que lee los usuarios registrados en el archivo de usuarios
+void crearArchivoSemilla(); //funcion para crear un archivo inicial - revisar en usuarios.c
+void leerUsuariosRegistrados(); //funcion para ver los usuarios del sitema, cuyos datos vienen del archivo semilla
+void registrarUsuario(); //funcion para agregar un nuevo usuario
+void eliminarUsuarioPorNombre(); //funcion para eliminar un usuario
 #endif // USUARIOS_H
+//                                                                                                                            //
