@@ -14,13 +14,19 @@ void menuBodeguero();
 int main() {
     FILE *comprobarInventario = fopen("productos.dat", "rb");
     if(comprobarInventario == NULL) {
-        printf("[SISTEMA] Creanfo bases de datos iniciales.\n");
-        crearArchivoSemilla();
+        printf("[SISTEMA] Creando base de datos inicial de productos.\n");
         crearInventarioSemilla();
     } else {
         fclose(comprobarInventario);
-        printf("[SISTEMA] Cargando inventario y usuarios registrados.\n");
     }
+    FILE *comprobarUsuarios = fopen("usuarios.dat", "rb");
+    if(comprobarUsuarios == NULL) {
+        printf("[SISTEMA] Creando base de datos inicial de usuarios.\n");
+        crearArchivoSemilla();
+    } else {
+        fclose(comprobarUsuarios);
+    }
+    printf("[SISTEMA] Bases de datos listas.\n");
     char uid_ingresado[24];
     int autenticado = 0;
     Rol rolUsuario;
@@ -103,8 +109,11 @@ void menuAdministrador() {
             case 12: leerUsuariosRegistrados(); break;
             case 13: {
                 char nombre[50];
+                int ch;
+                while ((ch = getchar()) != '\n' && ch != EOF); // limpiar el "\n" que dejo el scanf de la opcion
                 printf("Ingrese el nombre del usuario a eliminar: ");
-                scanf("%49s", nombre);
+                fgets(nombre, sizeof(nombre), stdin);
+                nombre[strcspn(nombre, "\n")] = 0;
                 eliminarUsuarioPorNombre(nombre);
                 break;
             }

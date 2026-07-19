@@ -68,22 +68,34 @@ int existeProducto(int id) {
 //          Funcion para registrar un nuevo producto          //
 void registrarProducto() {
     Producto nuevo;//variable "nuevo" de tipo Producto
+    int c;
     printf("\n----REGISTRO DE NUEVO PRODUCTO----\n");
     printf("Ingrese el ID del producto: ");//solicita el id para el nuevo producto
-    scanf("%d", &nuevo.id_producto);
+    if (scanf("%d", &nuevo.id_producto) != 1) {//valida que se haya ingresado un numero
+        printf("Error: ID invalido, debe ser un numero.\n");
+        while ((c = getchar()) != '\n' && c != EOF); // limpia el caracter invalido del buffer
+        return;
+    }
     if (existeProducto(nuevo.id_producto)) {
         printf("Error: Ya existe un producto con el ID %d.\n", nuevo.id_producto);//si el id ya existe mensaje de advertencia y termina la funcion
         return;
     }
-    int c;
     while((c = getchar()) != '\n' && c != EOF);//limpieza del buffer
     printf("Ingrese el nombre del producto: ");
     fgets(nuevo.nombre_producto, sizeof(nuevo.nombre_producto), stdin);//leer el nombre del producto con espacios
     nuevo.nombre_producto[strcspn(nuevo.nombre_producto, "\n")] = 0;//elimina el salto de linea
     printf("Ingrese el precio del producto: ");//ingreso del precio y el stock inicial
-    scanf("%f", &nuevo.precio);
+    if (scanf("%f", &nuevo.precio) != 1) {//valida que se haya ingresado un numero
+        printf("Error: Precio invalido, debe ser un numero.\n");
+        while ((c = getchar()) != '\n' && c != EOF);
+        return;
+    }
     printf("Ingrese el Stock inicial: ");
-    scanf("%d", &nuevo.stock);
+    if (scanf("%d", &nuevo.stock) != 1) {//valida que se haya ingresado un numero
+        printf("Error: Stock invalido, debe ser un numero.\n");
+        while ((c = getchar()) != '\n' && c != EOF);
+        return;
+    }
     if (nuevo.precio < 0 || nuevo.stock < 0) {//evitar precios o stock negativo
     printf("Error: Precio y stock deben ser valores positivos.\n");
     return;
@@ -108,10 +120,15 @@ void actualizaProducto() {
     int id_buscar;
     int encontrado = 0;//bandera para saber si encontro el producto
     Producto p;//variable "p" de tipo Producto
+    int c;
     printf("\n--- MODIFICAR PRODUCTO ---\n");
     printf("Ingrese el ID del producto a editar: ");
-    scanf("%d", &id_buscar);
-    int c;
+    if (scanf("%d", &id_buscar) != 1) {//valida que se haya ingresado un numero
+        printf("Error: ID invalido, debe ser un numero.\n");
+        while ((c = getchar()) != '\n' && c != EOF);
+        fclose(archivo);
+        return;
+    }
     while ((c = getchar()) != '\n' && c != EOF); // Limpiar buffer
     while (fread(&p, sizeof(Producto), 1, archivo) == 1) {//lee el archivo producto por producto
         if (p.id_producto == id_buscar) {
@@ -127,13 +144,21 @@ void actualizaProducto() {
             }
             printf("Nuevo precio (actual: %.2f / ingrese -1 para mantener): ", p.precio);//permite ingresar el nuevo precio, si se lo quiere mantener se ingresa -1
             float nuevo_precio;
-            scanf("%f", &nuevo_precio);
+            if (scanf("%f", &nuevo_precio) != 1) {//valida que se haya ingresado un numero
+                printf("Error: precio invalido, se mantiene el actual.\n");
+                while ((c = getchar()) != '\n' && c != EOF);
+                nuevo_precio = -1;
+            }
             if (nuevo_precio >= 0) {
                 p.precio = nuevo_precio;
             }
             printf("Nuevo stock (actual: %d / ingrese -1 para mantener): ", p.stock);//permite ingresar el nuevo stock
             int nuevo_stock;
-            scanf("%d", &nuevo_stock);
+            if (scanf("%d", &nuevo_stock) != 1) {//valida que se haya ingresado un numero
+                printf("Error: stock invalido, se mantiene el actual.\n");
+                while ((c = getchar()) != '\n' && c != EOF);
+                nuevo_stock = -1;
+            }
             if (nuevo_stock >= 0) {
                 p.stock = nuevo_stock;
             }
@@ -161,9 +186,17 @@ void eliminarProducto() {
     int id_eliminar;//int que se busca eliminar
     int encontrado = 0;//bandera para saber si hallo el producto
     Producto p;//variable p de tipo Producto
+    int c;
     printf("\n--- ELIMINAR PRODUCTO ---\n");
     printf("Ingrese el ID del producto a eliminar: ");
-    scanf("%d", &id_eliminar);//pide al usuario el id del producto que quiere eliminar
+    if (scanf("%d", &id_eliminar) != 1) {//valida que se haya ingresado un numero
+        printf("Error: ID invalido, debe ser un numero.\n");
+        while ((c = getchar()) != '\n' && c != EOF);
+        fclose(archivo);
+        fclose(temporal);
+        remove("temporal.dat");//el temporal quedo vacio e incompleto, se descarta
+        return;
+    }
         while(fread(&p, sizeof(Producto), 1, archivo) == 1) {//lee todo el archivo producto por producto hasta el final
         if (p.id_producto == id_eliminar) {
             encontrado = 1;//si lo encuentra lo marca y no se copia en el temporal

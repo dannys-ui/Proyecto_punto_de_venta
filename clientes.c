@@ -36,7 +36,7 @@ void eliminarCliente() {
     Cliente c;
     printf("\n--- ELIMINAR CLIENTE ---\n");
     printf("Ingrese la cédula del cliente a eliminar: ");
-    scanf("%s", cedula_eliminar);//pide al usuario la cedula que desea buscar para eliminar
+    scanf("%14s", cedula_eliminar);//pide al usuario la cedula que desea buscar para eliminar
     while (fread(&c, sizeof(Cliente), 1, archivo) == 1) {//lee cada elemento del archivo
         if (strcmp(c.cedula, cedula_eliminar) == 0) {//compara si alguna cedula del archivo coincide con la cedula ingresada para eliminar
             encontrado = 1;//cambia el valor de la bandera

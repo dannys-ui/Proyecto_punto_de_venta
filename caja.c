@@ -1,5 +1,6 @@
 #include "caja.h"
 #include "productos.h"
+#include "ventas.h"
 #include <stdio.h>
 #include <stdlib.h>
 //                                                                                                                                //
@@ -27,9 +28,9 @@ void abrirCaja() {
     if(archivoVentas != NULL) {//si existe el archivoVentas lo abre en modo append
         FILE *archivoHistorial = fopen("historial_ventas.dat", "ab");
         if(archivoHistorial != NULL) {
-            FacturaResumen f;
-            while(fread(&f, sizeof(FacturaResumen), 1, archivoVentas) == 1) {//copia todas las facturas al historialVentas
-                fwrite(&f, sizeof(FacturaResumen), 1, archivoHistorial);
+            Factura f;
+            while(fread(&f, sizeof(Factura), 1, archivoVentas) == 1) {//copia todas las facturas al historialVentas
+                fwrite(&f, sizeof(Factura), 1, archivoHistorial);
             }
             fclose(archivoHistorial);//cierra el historial de ventas
         }
@@ -53,8 +54,8 @@ void cerrarCaja() {
     FILE *archivoVentas = fopen("ventas.dat", "rb");//abre el archivo de ventas en modo lectura
     float total_ventas_dia = 0.0;//ventas del dia = 0.0
     if(archivoVentas != NULL) {//verifica si archivoVentas existe
-        FacturaResumen f;
-        while(fread(&f, sizeof(FacturaResumen), 1, archivoVentas) == 1) {//recorre todas las facturas y suma el total pagado para la suma total
+        Factura f;
+        while(fread(&f, sizeof(Factura), 1, archivoVentas) == 1) {//recorre todas las facturas y suma el total pagado para la suma total
             total_ventas_dia += f.total_pagado;
         }
         fclose(archivoVentas);//cierra el archivo de ventas del dia

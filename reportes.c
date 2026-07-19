@@ -18,8 +18,7 @@ void mostrarVentasPorFecha(const char *fecha_buscar) {//funcion que va a recibir
     printf("---------------------------------------------------\n");
     while (fread(&f, sizeof(Factura), 1, archivo) == 1) {//recorre todas las facturas del archivo
         if (strcmp(f.fecha, fecha_buscar) == 0) {//compara la fecha de la factura con la fecha buscada
-            printf("Ticket #%-4d | $%-11.2f | %s\n",
-                   f.id_factura, f.total_pagado, f.cedula_cliente);//si coincide imprime el ticket, el total y el cliente
+            printf("Ticket #%-4s | $%-11.2f | %s\n", f.id_factura, f.total_pagado, f.cedula_cliente);//si coincide imprime el ticket, el total y el cliente
             total_fecha += f.total_pagado;//suma total
             contador++;//aumenta el contador
         }
@@ -48,8 +47,7 @@ void mostrarVentasPorRango(const char *fecha_inicio, const char *fecha_fin) {
     printf("---------------------------------------------------------------\n");
     while (fread(&f, sizeof(Factura), 1, archivo) == 1) { //recorre todas las facturas
         if (strcmp(f.fecha, fecha_inicio) >= 0 && strcmp(f.fecha, fecha_fin) <= 0) {
-            printf("Ticket #%-4d | $%-11.2f | %s | %s\n",
-                   f.id_factura, f.total_pagado, f.cedula_cliente, f.fecha);
+            printf("Ticket #%-4s | $%-11.2f | %s | %s\n", f.id_factura, f.total_pagado, f.cedula_cliente, f.fecha);
             total_rango += f.total_pagado; //suma el total de esa factura
             contador++; //aumenta el contador
         }
@@ -87,9 +85,13 @@ void mostrarProductosMasVendidos() {
             }
         }
         if (!encontrado) {
-            strcpy(productos[num_productos].nombre_producto, f.nombre_producto); //copia el nombre de la factura al auxiliar productos
-            productos[num_productos].cantidad_total = f.cantidad;
-            num_productos++;
+            if (num_productos < 100) {
+                strcpy(productos[num_productos].nombre_producto, f.nombre_producto); //copia el nombre de la factura al auxiliar productos
+                productos[num_productos].cantidad_total = f.cantidad;
+                num_productos++;
+            } else {
+                printf("Aviso: se alcanzo el limite de 100 productos distintos en el reporte.\n");
+            }
         }
     }
     fclose(archivo); //cierra el archivo
@@ -124,7 +126,7 @@ void mostrarStockBajoMinimo(int minimo) {
     printf("-------------------------------------------------\n");
     while (fread(&p, sizeof(Producto), 1, archivo) == 1) { //lee cada producto
         if (p.stock < minimo) { //condición: stock menor al mínimo
-            printf("%-10s | %-20s | %-10d\n", p.id_producto, p.nombre_producto, p.stock);
+            printf("%-10d | %-20s | %-10d\n", p.id_producto, p.nombre_producto, p.stock);
             contador++; //aumenta el contador
         }
     }
@@ -158,9 +160,13 @@ void mostrarRankingClientes() {
             }
         }
         if (!encontrado) { //si el cliente no esta en la lista copia la cedula, inicia su gasto con el total de la factura 
-            strcpy(clientes[num_clientes].cedula_cliente, f.cedula_cliente);
-            clientes[num_clientes].total_gastado = f.total_pagado;
-            num_clientes++; //incrementa el numero de clientes
+            if(num_clientes < 100) {
+                strcpy(clientes[num_clientes].cedula_cliente, f.cedula_cliente);
+                clientes[num_clientes].total_gastado = f.total_pagado;
+                num_clientes++;
+            } else {
+                printf("Aviso se alcanzo el limite de 100 clientes en el reporte.\n");
+            }
         }
     }
     fclose(archivo); //cierra el archivo de ventas
@@ -174,7 +180,7 @@ void mostrarRankingClientes() {
         }
     }
     printf("\n---- RANKING DE CLIENTES POR MONTO TOTAL ----\n");
-    printf("%-20s | %-12s\n", "Cliente (Cédula)", "Total Gastado");
+    printf("%-20s | %-12s\n", "Cliente (Cedula)", "Total Gastado");
     printf("---------------------------------------------\n");
     for (int i = 0; i < num_clientes; i++) { //recorre el arreglo ya ordenado y muestra cada cliente con su gasto toal
         printf("%-20s | $%-11.2f\n", clientes[i].cedula_cliente, clientes[i].total_gastado);
@@ -188,40 +194,40 @@ void menuReportesAvanzado() {
         printf("\n    MENU REPORTES AVANZADOS    \n");
         printf("1. Ventas por fecha.\n");
         printf("2. Ventas por rango.\n");
-        printf("3. Productos más vendidos.\n");
-        printf("4. Stock bajo mínimo.\n");
+        printf("3. Productos mas vendidos.\n");
+        printf("4. Stock bajo minimo.\n");
         printf("5. Ranking de clientes.\n");
         printf("6. Volver.\n");
-        printf("Seleccione una opción: ");
+        printf("Seleccione una opcion: ");
         scanf("%d", &opcion);
         switch (opcion) {
             case 1: {
                 char fecha[11];
                 printf("Ingrese la fecha (YYYY-MM-DD): ");
-                scanf("%s", fecha);
+                scanf("%10s", fecha);
                 mostrarVentasPorFecha(fecha);
                 break;
             }
             case 2: {
                 char inicio[11], fin[11];
                 printf("Ingrese fecha inicio (YYYY-MM-DD): ");
-                scanf("%s", inicio);
+                scanf("%10s", inicio);
                 printf("Ingrese fecha fin (YYYY-MM-DD): ");
-                scanf("%s", fin);
+                scanf("%10s", fin);
                 mostrarVentasPorRango(inicio, fin);
                 break;
             }
             case 3: mostrarProductosMasVendidos(); break;
             case 4: {
                 int minimo;
-                printf("Ingrese el stock mínimo: ");
+                printf("Ingrese el stock minimo: ");
                 scanf("%d", &minimo);
                 mostrarStockBajoMinimo(minimo);
                 break;
             }
             case 5: mostrarRankingClientes(); break;
-            case 6: printf("Volviendo al menú principal...\n"); break;
-            default: printf("Opción no válida.\n");
+            case 6: printf("Volviendo al menu principal...\n"); break;
+            default: printf("Opcion no válida.\n");
         }
     } while (opcion != 6);
 }

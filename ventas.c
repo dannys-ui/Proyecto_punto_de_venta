@@ -4,7 +4,6 @@
 #include "ventas.h"
 #include "caja.h"
 #include "clientes.h"
-static int contador_facturas = 1;
 //                                                                                                                                 //
 char* obtenerSiguienteIdFactura() {
     static int contador = 1;
@@ -29,14 +28,14 @@ void realizarVenta() {
     char cedula_buscar[15];
     printf("\n---- NUEVA VENTA (CAJA) ----\n");
     printf("Ingrese la cedula del cliente, o escriba '9999999999' para Consumidor Final: ");
-    scanf("%s", cedula_buscar);//pide la cedula del cliente o 9999999999 para realizar un consumidor final
+    scanf("%14s", cedula_buscar);//pide la cedula del cliente o 9999999999 para realizar un consumidor final
     Cliente c;
     if (strcmp(cedula_buscar, "9999999999") == 0) {//si es consumidor final se asigna directamente
         strcpy(c.nombre_cliente, "Consumidor Final");
         strcpy(c.cedula, "9999999999");
     } else {
         c = buscarClientePorCedula(cedula_buscar);
-        if (strcmp(c.nombre_cliente, "No registrado") == 0) {//si no es consumidor final lo busca en clientes
+        if (strcmp(c.nombre_cliente, "No Registrado") == 0) {//si no es consumidor final lo busca en clientes
             printf("El cliente no existe. Use Consumidor Final.\n");//si no lo encuentra se cancela la venta y se sugiere usar consumidor final
             fclose(archivoProds);
             fclose(archivoVentas);//se cierran los archivos
@@ -67,6 +66,10 @@ void realizarVenta() {
                 }
                 printf("Ingrese la cantidad a vender: ");
                 scanf("%d", &cantidad_vender);//pide la cantidad a vender
+                if (cantidad_vender <=0) {
+                    printf("Error: La cantidad a vender debe ser mayor a cero.\n");
+                    break;
+                }
                 if (cantidad_vender > p.stock) {//error si la cantidad a vender es mayor al stock
                     printf("Error: Stock insuficiente. Quedan %d unidades.\n", p.stock);
                     break;
@@ -79,19 +82,17 @@ void realizarVenta() {
                 fwrite(&p, sizeof(Producto), 1, archivoProds);
                 Factura nuevaVenta;
                 strcpy(nuevaVenta.id_factura, obtenerSiguienteIdFactura());
+                snprintf(nuevaVenta.id_producto, sizeof(nuevaVenta.id_producto), "%d", p.id_producto);
                 strcpy(nuevaVenta.cedula_cliente, c.cedula);
                 strcpy(nuevaVenta.nombre_producto, p.nombre_producto);
                 nuevaVenta.cantidad = cantidad_vender;                      //crea factura unica con ID global unico
                 nuevaVenta.precio_unitario = p.precio;
-                nuevaVenta.total_pagado = subtotal_item;
+                nuevaVenta.total_pagado = subtotal_item * 1.15; // incluye IVA 15%, para que coincida con lo realmente cobrado
                 strcpy(nuevaVenta.usuario, "cajeroX");
                 time_t t = time(NULL);//para guardar la fecha
                 struct tm *tm_info = localtime(&t);
                 strftime(nuevaVenta.fecha, 11, "%Y-%m-%d", tm_info);
                 fwrite(&nuevaVenta, sizeof(Factura), 1, archivoVentas);
-                FacturaResumen resumen;
-                resumen.total_pagado = subtotal_item;
-                fwrite(&resumen, sizeof(FacturaResumen), 1, archivoVentas);
                 break;
             }
         }
@@ -138,7 +139,7 @@ void mostrarVentas() {
     printf("%-10s | %-12s\n", "Num Ticket", "Total Pagado");//alinear el texto en columnas
     printf("--------------------------------\n");
     while (fread(&f, sizeof(Factura), 1, archivo) == 1) {//recorre todas las facturas del archivo
-        printf("Ticket #%-4d | $%-11.2f\n", f.id_factura, f.total_pagado);//muestra el ID de la factura y el total pagado
+        printf("Ticket #%-4s | $%-11.2f\n", f.id_factura, f.total_pagado);//muestra el ID de la factura y el total pagado
         gran_total += f.total_pagado;//suma cada total
     }
     printf("---------------------------\n");

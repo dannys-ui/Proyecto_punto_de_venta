@@ -8,17 +8,6 @@ typedef struct {//estructura de datos
     float precio;//flotante para registrar el precio de un producto
     int stock;//entero para registrar el stock de un producto
 } Producto;//nombre de la estructura
-typedef struct {//estructura de datos
-    int id_producto;//referencia al producto vendido
-    char nombre_producto[50];//nombre del producto vendido
-    int cantidad;//cantidad vendida
-    float precio_unitario;//precio unitario
-    float subtotal;//resultado de cantidad*precio_unitario
-} DetalleVenta;//nombre de la estructura
-typedef struct {//estructura de datos
-    int id_venta;//id del producto para realizar la factura
-    float total_pagado;//venta total 
-} FacturaResumen;//nombre de la estructura
 void crearInventarioSemilla();//funcion para crear la lista inicial 
 void mostrarProductos();//funcion para mostrar la lista de productos
 int existeProducto(int id);

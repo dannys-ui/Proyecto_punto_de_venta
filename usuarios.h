@@ -17,6 +17,6 @@ typedef struct {
 void crearArchivoSemilla(); //funcion para crear un archivo inicial - revisar en usuarios.c
 void leerUsuariosRegistrados(); //funcion para ver los usuarios del sitema, cuyos datos vienen del archivo semilla
 void registrarUsuario(); //funcion para agregar un nuevo usuario
-void eliminarUsuarioPorNombre(); //funcion para eliminar un usuario
+void eliminarUsuarioPorNombre(const char* nombre); //funcion para eliminar un usuario
 #endif // USUARIOS_H
 //                                                                                                                            //
