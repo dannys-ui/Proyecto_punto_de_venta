@@ -23,5 +23,6 @@ Factura buscarVentaPorId(int id_factura);//buscar la venta
 char* obtenerSiguienteIdFactura();
 void actualizarCliente(Cliente c);
 void mostrarHistorialVentas();
+float sumarTotalVentasRecursivo(FILE *archivo);//funcion recursiva: suma el total de ventas leyendo el archivo registro por registro
 #endif // VENTAS_H
 //                                                                                                                                //

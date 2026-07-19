@@ -126,6 +126,15 @@ void realizarVenta() {
     fclose(archivoVentas);//se cierran los archivos
 }
 //                                                                                                                                //
+//          Funcion RECURSIVA para sumar el total de ventas          //
+float sumarTotalVentasRecursivo(FILE *archivo) {
+    Factura f;//variable local, distinta en cada llamada recursiva (cada nivel de la recursion tiene la suya)
+    if (fread(&f, sizeof(Factura), 1, archivo) != 1) {//caso base: ya no hay mas registros que leer
+        return 0.0;//no suma nada mas, aqui termina la recursion
+    }
+    return f.total_pagado + sumarTotalVentasRecursivo(archivo);//caso recursivo: suma esta factura + el resultado de sumar el resto del archivo
+}
+//                                                                                                                                //
 //          Funcion para mostrar ventas realizadas          //
 void mostrarVentas() {
     FILE *archivo = fopen("ventas.dat", "rb");//abre el archivo de ventas en modo lectura
@@ -134,14 +143,14 @@ void mostrarVentas() {
         return;
     }
     Factura f;//variable "f" de tipo Factura
-    float gran_total = 0;//valor total inicializado en 0
     printf("\n---- HISTORIAL DE VENTAS ----\n");
     printf("%-10s | %-12s\n", "Num Ticket", "Total Pagado");//alinear el texto en columnas
     printf("--------------------------------\n");
-    while (fread(&f, sizeof(Factura), 1, archivo) == 1) {//recorre todas las facturas del archivo
+    while (fread(&f, sizeof(Factura), 1, archivo) == 1) {//recorre todas las facturas del archivo para imprimirlas
         printf("Ticket #%-4s | $%-11.2f\n", f.id_factura, f.total_pagado);//muestra el ID de la factura y el total pagado
-        gran_total += f.total_pagado;//suma cada total
     }
+    rewind(archivo);//regresa el puntero al inicio del archivo para volver a recorrerlo con la funcion recursiva
+    float gran_total = sumarTotalVentasRecursivo(archivo);//calcula el total, esta vez de forma recursiva en vez de con un acumulador iterativo
     printf("---------------------------\n");
     printf("GANANCIAS TOTALES DEL DIA: $%.2f\n", gran_total);//total acumulado de todo el dia
     fclose(archivo);//cierra el archivo
