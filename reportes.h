@@ -10,6 +10,9 @@ void mostrarVentasPorRango(const char *fecha_inicio, const char *fecha_fin); //f
 void mostrarProductosMasVendidos(); //funcion para productos mas vendidos
 void mostrarStockBajoMinimo(int minimo); //funcion para alertar de stock bajo
 void mostrarRankingClientes(); //funcion para ranking de clientes
+int particionarProductos(Producto *arreglo, int inicio, int fin); //funcion de particion para el quicksort
+void quicksortProductos(Producto *arreglo, int inicio, int fin); //funcion recursiva de ordenamiento quicksort
+void mostrarInventarioOrdenado(); //funcion para ver el inventario ordenado alfabeticamente (usa quicksort y memoria dinamica)
 void menuReportesAvanzado(); //funcion para el menu de reportes
 #endif
 //                                                                                                                                //
