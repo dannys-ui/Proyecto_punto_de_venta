@@ -156,7 +156,8 @@ void menuBodeguero() {
         printf("2. Registrar ingreso de nuevo producto.\n");
         printf("3. Actualizar producto.\n");
         printf("4. Reporte de stock bajo minimo.\n");
-        printf("5. Salir del sistema.\n");
+        printf("5. Inventario ordenado alfabeticamente.\n");
+        printf("6. Salir del sistema.\n");
         printf("Seleccione una opcion: ");
         scanf("%d", &opcion);
         switch (opcion) {
@@ -170,8 +171,9 @@ void menuBodeguero() {
                 mostrarStockBajoMinimo(minimo);
                 break;
             }
-            case 5: printf("Cerrando sesion de BODEGUERO.\n"); break;
+            case 5: mostrarInventarioOrdenado(); break;
+            case 6: printf("Cerrando sesion de BODEGUERO.\n"); break;
             default: printf("Opcion no valida.\n");
         }
-    } while (opcion != 5);
+    } while (opcion != 6);
 }
